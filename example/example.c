@@ -15,16 +15,18 @@ int main()
     r1.x=40-r1.w/2;
     r1.y=40-r1.h/2;
     CreateWindow(640,640,"My Game Window"); 
+    Font b= loadFont("arial.ttf",25);
     Color a={209, 84, 178,255};
     Color c={122,0, 18,255};
+    Color white={255,255,255};
     int x=0,y=0;
     float rot;
     struct Texture cubeToDraw=LoadTexture("res/plyr.png");
     while (!closed())    //closed() returns if the app shouldbe closed or not
     {
-       
-        ClearRender(); //clears the renderer 
-        rot+=1;
+      
+      ClearRender(); //clears the renderer 
+      rot+=1;
         if(1==isKeyPressed(KEYS_RIGHT))
         {
               x+=1;
@@ -52,12 +54,11 @@ int main()
         r1.y=y;
         DrawRect(&r,a,isRectColliding(r,r1)); //Draws a rect "r "if it is colliding with r1 filled else not filled
         DrawRect(&r1,a,false);
-        DrawLine(c,x,y,x+r.w,y);
+        DrawLine(c,x,y+10,x+r.w,y+10);
         DrawCircle(c,10,320,320);
+        DrawTexture(FontGetAsTexture(b,"Hello World",white),65,0);
         UpdateRenderer();
         printf("FPS: %i \n", FPS);
     }
     
 }
-
-
