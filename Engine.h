@@ -1,15 +1,16 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 #include <math.h>
 #include <stdbool.h>
 #include <time.h>
-#define RENDER_FLIP_HORIZONTAL
 #define Event SDL_Event
 #define Rect SDL_Rect
 #define fRect SDL_FRect
 #define Color SDL_Color
 
+using Font = TTF_Font*;
 const int MAXFPS=60;
 const int MAXTPF=1000/MAXFPS;//ticks per frame
 int TICKTIMER;
@@ -35,17 +36,21 @@ bool closed()
             return true;
         }
     }
-    return false;
-    
+    return false;   
 }
 
 void Init()
 {
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG);
+    TTF_Init();
 }       
 
 /*Render START */
+#define FLIP_NONE SDL_FLIP_NONE
+#define FLIP_NONE SDL_FLIP_VERTICAL
+#define FLIP_NONE SDL_FLIP_HORIZONTAL
+
 
 void CreateWindow(int ScreenSizeX, int ScreenSizeY,const char* name)
 {
@@ -100,21 +105,17 @@ void ClearRender()
 //Filling it may create performance problems
 void DrawRect(Rect* r,Color c,bool isFilled)
 {   
-    int cr,cg,cb,ca;
+    Uint8 cr,cg,cb,ca;
     SDL_GetRenderDrawColor(RENDERER,&cr,&cg,&cb,&ca);
     SDL_SetRenderDrawColor(RENDERER,c.r,c.g,c.b,c.a);
     if(isFilled==false)
         SDL_RenderDrawRect(RENDERER,r);
     else
     {
-        for(int x=0;x<r->w+1;x++)
+        for(int y=0;y<r->h;y++)
         {
-            for(int y=0;y<r->h+1;y++)
-            {
-                SDL_RenderDrawLine(RENDERER,r->x,r->y,r->x+x,r->y+y);
-            }
+            SDL_RenderDrawLine(RENDERER,r->x,r->y+y,r->x+r->w,r->y+y);
         }
-        
     }
     SDL_SetRenderDrawColor(RENDERER,cr,cg,cb,ca);
     
@@ -122,7 +123,7 @@ void DrawRect(Rect* r,Color c,bool isFilled)
 void DrawLine(Color c,int x1,int y1,int x2,int y2)
 {
     
-    int cr,cg,cb,ca;
+    Uint8 cr,cg,cb,ca;
     SDL_GetRenderDrawColor(RENDERER,&cr,&cg,&cb,&ca);
     SDL_SetRenderDrawColor(RENDERER,c.r,c.g,c.b,c.a);
     SDL_RenderDrawLine(RENDERER,x1,y1,x2,y2);
@@ -131,7 +132,7 @@ void DrawLine(Color c,int x1,int y1,int x2,int y2)
 void DrawCircle(Color c,int radius,int x,int y)
 {
 
-    int cr,cg,cb,ca;
+    Uint8 cr,cg,cb,ca;
     SDL_GetRenderDrawColor(RENDERER,&cr,&cg,&cb,&ca);
     SDL_SetRenderDrawColor(RENDERER,c.r,c.g,c.b,c.a);
     int i=radius;
@@ -257,3 +258,23 @@ bool isRectColliding(Rect a,Rect b)
 {
     return (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.h + a.y > b.y);
 }
+
+
+
+/*Font START*/
+Font loadFont(char* res,int Size)
+{
+    Font f=TTF_OpenFont(res,Size);
+    return f;   
+}
+
+Texture FontGetAsTexture(Font f,char* str,Color c)
+{
+    SDL_Texture * s = SDL_CreateTextureFromSurface(RENDERER,TTF_RenderText_Solid(f,str, c));
+    int w,h;
+    SDL_QueryTexture(s,NULL,NULL,&w,&h);
+    Texture a={s,w,h};
+    return a;
+}
+
+/*Font END*/
