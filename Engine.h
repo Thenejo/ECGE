@@ -48,8 +48,8 @@ void Init()
 
 /*Render START */
 #define FLIP_NONE SDL_FLIP_NONE
-#define FLIP_NONE SDL_FLIP_VERTICAL
-#define FLIP_NONE SDL_FLIP_HORIZONTAL
+#define FLIP_VERTICAL SDL_FLIP_VERTICAL
+#define FLIP_HORIZONTAL SDL_FLIP_HORIZONTAL
 
 
 void CreateWindow(int ScreenSizeX, int ScreenSizeY,const char* name)
