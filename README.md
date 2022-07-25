@@ -1,6 +1,6 @@
 # ECGE
 
-An easy header only graphics engine based on SDL2 and made with C
+An easy header only graphics framework based on SDL2 and made with C
 
 # Dependencies
 
